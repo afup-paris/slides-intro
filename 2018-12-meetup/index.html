@@ -66,10 +66,58 @@
 					<img src="https://media.giphy.com/media/NmhNVJE9h3LdA1QSgO/giphy.gif" />
 				</section>
 				<section>
-					<h2>PHP demain ?</h2>
+					<h2>🎆🎆🎆<br>PHP 7.3 Released TODAY !<br>🎆🎆🎆</h2>
+				</section>
+				<section>
+					<h2>Syntaxe Heredoc & Nowdoc</h2>
+					<pre>
+						<code class="php">
+&lt;?php
+	$string = &lt;&lt;&lt;IDENTIFIER
+	Some string
+	that is multi-line
+IDENTIFIER; // IDENTIFIER must not me indented at all
+?&gt;
+						</code>
+						<code class="php">
+&lt;?php
+	$string = &lt;&lt;&lt;IDENTIFIER
+		Some string
+		that is multi-line
+	IDENTIFIER; // IDENTIFIER can be indented
+?&gt;
+						</code>
+					</pre>
+				</section>
+				<section>
+					<h2>Trailing comma dans les calls de fonctions et méthodes</h2>
+					<pre>
+						<code class="php">
+$obj-&gt;method(
+	$arg1,
+	$arg2,
+	$arg3, // &lt;- virgule ici autoris&eacute;e
+);
+						</code>
+					</pre>
+				</section>
+				<section>
+					<h2>Références dans list()</h2>
+					<pre>
+						<code class="php">
+$arr = ['apple', 'orange'];
+list($a, &amp;$b) = $arr;
+$b = 'banana';
+echo $arr[1]; // affiche 'banana'
+						</code>
+					</pre>
+				</section>
+				<section>
+					<h2>Et pleins d'autres trucs</h2>
 					<ul>
-                        <li>🎆🎆🎆 PHP 7.3 TODAY ! 🎆🎆🎆</li>
-                        <li>Preload (<a>https://wiki.php.net/rfc/preload</a>)</li>
+						<li>Option pour que json_encode et json_decode lancent des exceptions en cas d'erreur</li>
+						<li>is_countable()</li>
+						<li>array_key_first() & array_key_last()</li>
 					</ul>
 				</section>
 				<section>
