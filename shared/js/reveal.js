@@ -660,26 +660,15 @@
         // Let the browser know what page size we want to print
         injectStyleSheet( '@page{size:'+ pageWidth +'px '+ pageHeight +'px; margin: 0px;}' );
 
-        // Limit the size of certain elements to the dimensions of the slide
-        injectStyleSheet( '.reveal section>img, .reveal section>video, .reveal section>iframe{max-width: '+ slideWidth +'px; max-height:'+ slideHeight +'px}' );
+        // Cap every image/video/iframe to the slide dimensions (handles
+        // nested images, not only direct children of <section>).
+        injectStyleSheet( '.reveal section img, .reveal section video, .reveal section iframe{max-width: '+ slideWidth +'px !important; max-height:'+ slideHeight +'px !important;}' );
 
-        // Print-pdf layout rules (equivalent to reveal.js v3 css/print/pdf.css).
-        // Required because the default stylesheet hides every section that
-        // isn't `.present` and clips `.reveal` to a single viewport.
-        injectStyleSheet(
-            '.print-pdf * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }' +
-            'html, .print-pdf body { background: #fff !important; overflow: visible !important; width: auto !important; height: auto !important; margin: 0 !important; padding: 0 !important; }' +
-            '.print-pdf .reveal { width: auto !important; height: auto !important; overflow: visible !important; }' +
-            '.print-pdf .reveal .controls, .print-pdf .reveal .progress, .print-pdf .reveal .playback, .print-pdf .reveal .backgrounds, .print-pdf .reveal .slide-number { display: none !important; }' +
-            '.print-pdf .reveal .slides { position: static !important; width: 100% !important; height: auto !important; left: 0 !important; top: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; display: block !important; perspective: none !important; -webkit-perspective: none !important; -webkit-transform: none !important; transform: none !important; text-align: left !important; zoom: 1 !important; pointer-events: auto !important; }' +
-            '.print-pdf .reveal .slides .pdf-page { position: relative !important; overflow: hidden; z-index: 1; page-break-after: always; }' +
-            '.print-pdf .reveal .slides > section, .print-pdf .reveal .slides > section > section { visibility: visible !important; display: block !important; position: absolute !important; margin: 0 !important; padding: 0 !important; box-sizing: border-box !important; min-height: 1px; opacity: 1 !important; -webkit-transform-style: flat !important; transform-style: flat !important; -webkit-transform: none !important; transform: none !important; }' +
-            '.print-pdf .reveal section.stack { position: relative !important; margin: 0 !important; padding: 0 !important; page-break-after: avoid !important; height: auto !important; min-height: auto !important; }' +
-            '.print-pdf .reveal section .slide-background { display: block !important; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }' +
-            '.print-pdf .reveal section > * { position: relative; z-index: 1; }' +
-            '.print-pdf .reveal .slide-number-pdf { display: block; position: absolute; font-size: 14px; }' +
-            '.print-pdf .reveal .speaker-notes-pdf { display: block; width: 100%; max-height: none; left: auto; top: auto; z-index: 100; }'
-        );
+        // Print-pdf layout rules (port of reveal.js v3 css/print/pdf.css).
+        // Injected inline so they apply synchronously — required because
+        // setupPDF reads slide.scrollHeight just below to compute vertical
+        // centering, and that returns 0 if sections are still hidden.
+        injectPrintPdfStylesheet( slideHeight );
 
         document.body.classList.add( 'print-pdf' );
         document.body.style.width = pageWidth + 'px';
@@ -794,7 +783,7 @@
         // If the URL contains `print-pdf-now`, open the browser's
         // print dialog automatically once the PDF layout is ready.
         if( /print-pdf-now/gi.test( window.location.search ) ) {
-            setTimeout( function() { window.print(); }, 0 );
+            setTimeout( function() { window.print(); }, 200 );
         }
 
     }
@@ -1388,6 +1377,38 @@
         else {
             transformElement( dom.slides, slidesTransform.overview );
         }
+
+    }
+
+    /**
+     * Injects the print-pdf layout rules (ported from reveal.js v3
+     * css/print/pdf.css). Synchronous so subsequent scrollHeight reads
+     * see the actual content size. Logo and image-fit tweaks are
+     * specific to this slide deck.
+     */
+    function injectPrintPdfStylesheet( slideHeight ) {
+
+        // Resolve the logo URL from the running reveal.js script so it
+        // works from any presentation directory.
+        var revealScript = document.querySelector( 'script[src*="reveal.js"]' );
+        var logoUrl = revealScript
+            ? revealScript.getAttribute( 'src' ).replace( /js\/reveal\.js.*$/, 'images/logo.png' )
+            : '../shared/images/logo.png';
+
+        injectStyleSheet(
+            '@media print { * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }' +
+            'html { overflow: visible !important; }' +
+            '.print-pdf body { overflow: visible !important; height: auto !important; background: #fff !important; }' +
+            '.print-pdf .reveal { width: auto !important; height: auto !important; overflow: visible !important; }' +
+            '.print-pdf .reveal .controls, .print-pdf .reveal .progress, .print-pdf .reveal .playback, .print-pdf .reveal .backgrounds, .print-pdf .reveal .slide-number { display: none !important; }' +
+            '.print-pdf .reveal .slides { position: static !important; width: 100% !important; height: auto !important; left: 0 !important; top: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; display: block !important; -webkit-perspective: none !important; perspective: none !important; -webkit-transform: none !important; transform: none !important; pointer-events: auto !important; }' +
+            '.print-pdf .reveal .slides .pdf-page { position: relative !important; overflow: hidden; z-index: 1; page-break-after: always; ' +
+                'background-image: url("' + logoUrl + '"); background-repeat: no-repeat; background-size: 8em; background-position: bottom 3% left 3%; }' +
+            '.print-pdf .reveal .slides > section, .print-pdf .reveal .slides > section > section { visibility: visible !important; display: block !important; opacity: 1 !important; transition: none !important; -webkit-transform: none !important; transform: none !important; box-sizing: border-box; }' +
+            '.print-pdf .reveal section.stack { position: relative !important; page-break-after: avoid !important; height: auto !important; min-height: auto !important; }' +
+            '.print-pdf .reveal .slide-number-pdf { display: block; position: absolute; font-size: 14px; }' +
+            '.print-pdf .reveal .speaker-notes-pdf { display: block; width: 100%; max-height: none; left: auto; top: auto; z-index: 100; }'
+        );
 
     }
 
