@@ -52,7 +52,21 @@ jobs:
               | while IFS= read -r meetup; do
                   year=${meetup:0:4}
                   month=${meetup:5:2}
-                  printf '                          <li class="list-group-item"><a class="link-primary text-decoration-none" href="%s/">Meetup %s/%s</a></li>\n' "$meetup" "$month" "$year"
+                  case "$month" in
+                    01) month_name="janvier" ;;
+                    02) month_name="février" ;;
+                    03) month_name="mars" ;;
+                    04) month_name="avril" ;;
+                    05) month_name="mai" ;;
+                    06) month_name="juin" ;;
+                    07) month_name="juillet" ;;
+                    08) month_name="août" ;;
+                    09) month_name="septembre" ;;
+                    10) month_name="octobre" ;;
+                    11) month_name="novembre" ;;
+                    12) month_name="décembre" ;;
+                  esac
+                  printf '                          <li class="list-group-item"><a class="link-primary text-decoration-none" href="%s/">Meetup %s %s</a></li>\n' "$meetup" "$month_name" "$year"
                 done
 
             cat <<'EOF'
