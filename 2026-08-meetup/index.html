@@ -114,8 +114,44 @@
                     <h2>PHP 8.6</h2>
                     <ul>
                         <li>13 août : 8.6.0 beta 1</li>
-                        <li>Aujourd'hui : 8.6.0 beta 2</li>
+                        <li>27 août : 8.6.0 beta 2</li>
                     </ul>
+                </section>
+                <section>
+                    <h2>PHP 8.6 : nouveautés</h2>
+                    <ul>
+                        <li><code>clamp()</code> pour borner une valeur</li>
+                        <li><code>SortDirection</code> : une enum pour trier</li>
+                        <li><code>grapheme_strrev()</code> respecte les caractères Unicode</li>
+                        <li><code>Io\Poll</code> et <code>Time\Duration</code></li>
+                        <li>Meilleurs messages d'erreur pour <code>json_decode()</code></li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>PHP 8.6 : exemples</h2>
+                    <pre><code class="language-php">$volume = clamp($volume, 0, 100);
+
+    $query->orderBy('created_at', SortDirection::Descending);
+
+echo grapheme_strrev('Développeur PHP');</code></pre>
+                </section>
+                <section>
+                    <h2>Symfony Polyfill</h2>
+                    <ul>
+                        <li>Des API PHP récentes sur des versions plus anciennes</li>
+                        <li>Activé uniquement si l'API native n'existe pas</li>
+                        <li>PHP 8.6 : <code>clamp()</code>, <code>SortDirection</code></li>
+                        <li><code>grapheme_strrev()</code>, <code>Io\Poll</code>, <code>Time\Duration</code></li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Polyfill : installation ciblée</h2>
+                    <pre><code class="language-bash">composer require symfony/polyfill-php86
+
+# ou les composants dédiés
+composer require symfony/polyfill-io-poll
+composer require symfony/polyfill-time</code></pre>
+                    <p>Objectif : garder le même code, le temps de migrer.</p>
                 </section>
                 <section>
                     <h2>PHP Foundation</h2>
