@@ -1,0 +1,81 @@
+name: Deploy slides
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Bootstrap
+        run: npm install --prefix "$RUNNER_TEMP/bootstrap" --no-save bootstrap@5.3.3
+
+      - name: Build meetup index
+        shell: bash
+        run: |
+          cp "$RUNNER_TEMP/bootstrap/node_modules/bootstrap/dist/css/bootstrap.min.css" ./bootstrap.min.css
+          {
+            cat <<'EOF'
+          <!doctype html>
+          <html lang="fr">
+          <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <title>Slides des meetups AFUP Paris</title>
+              <link href="bootstrap.min.css" rel="stylesheet">
+          </head>
+            <body class="bg-light">
+              <main class="container py-5">
+                <div class="mx-auto" style="max-width: 720px">
+                  <h1 class="display-6 fw-bold mb-4">Slides des meetups AFUP Paris</h1>
+                  <ul class="list-group shadow-sm">
+          EOF
+
+            find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n' \
+              | grep -E '^[0-9]{4}-[0-9]{2}-meetup$' \
+              | sort -r \
+              | while IFS= read -r meetup; do
+                  year=${meetup:0:4}
+                  month=${meetup:5:2}
+                  printf '                          <li class="list-group-item"><a class="link-primary text-decoration-none" href="%s/">Meetup %s/%s</a></li>\n' "$meetup" "$month" "$year"
+                done
+
+            cat <<'EOF'
+                    </ul>
+                  </div>
+                </main>
+          </body>
+          </html>
+          EOF
+          } > index.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
