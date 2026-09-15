@@ -1,0 +1,95 @@
+@font-face {
+    font-family: 'RobotoCondensed-Bold';
+    src: url('../fonts/RobotoCondensed-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Belgrano';
+    src: url('../fonts/Belgrano-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.reveal {
+    font-family: 'Roboto Condensed', sans-serif !important;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+    font-family: 'Belgrano', sans-serif !important;
+}
+
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.reveal p,
+.reveal li,
+.reveal table {
+    font-size: 0.7em;
+}
+
+.reveal .bureau img {
+    width: 80px;
+    height: 80px;
+    margin: 0 15px;
+    vertical-align: middle;
+}
+
+.reveal table td,
+.reveal table th {
+    border: 0 none;
+    vertical-align: middle;
+}
+
+.reveal .card-talk {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #f0f0f0;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.reveal .card-talk:nth-child(odd) {
+    flex-direction: row-reverse;
+}
+
+.reveal .card-talk img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1px solid #000000;
+}
+
+.reveal .card-talk .card-talk-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.reveal .card-talk h3 {
+    font-size: 0.8em;
+    margin: 0;
+}
+
+
+.reveal .bureau img {
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid #000000;
+}
