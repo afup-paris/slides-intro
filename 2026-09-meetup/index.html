@@ -102,6 +102,60 @@
                     </ul>
                 </section>
                 <section>
+                    <h2>PHP 8.6 : nouveautés côté langage</h2>
+                    <ul>
+                        <li>Partial Function Application : des closures avec paramètres pré-remplis</li>
+                        <li>Propriétés <code>readonly</code> avec valeur par défaut</li>
+                        <li>Commentaires de doc au niveau des paramètres (<code>ReflectionParameter::getDocComment()</code>)</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>PHP 8.6 : nouveautés côté stdlib</h2>
+                    <ul>
+                        <li><code>clamp()</code> pour borner une valeur</li>
+                        <li><code>SortDirection</code> : une enum pour trier</li>
+                        <li><code>Time\Duration</code> : durées avec précision nanoseconde</li>
+                        <li><code>Io\Poll</code> : API de polling native (epoll, WSAPoll)</li>
+                        <li><code>grapheme_strrev()</code> respecte les caractères Unicode</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>PHP 8.6 : sécurité par défaut</h2>
+                    <ul>
+                        <li><code>session.use_strict_mode = 1</code></li>
+                        <li><code>session.cookie_httponly = 1</code></li>
+                        <li><code>session.cookie_samesite = Lax</code></li>
+                        <li>Des réglages sûrs sans rien configurer</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>PHP 8.6 : exemples</h2>
+                    <pre><code class="language-php">$makeSlug = str_replace(' ', '-', ?);
+$makeSlug('Hello World'); // Hello-World
+
+clamp(101, min: 0, max: 100); // 100
+
+$query->orderBy('created_at', SortDirection::Descending);
+
+sleep(Duration::fromMilliseconds(500));</code></pre>
+                </section>
+                <section>
+                    <h2>Symfony Polyfill</h2>
+                    <ul>
+                        <li><code>clamp()</code>, <code>SortDirection</code>, <code>grapheme_strrev()</code> : <code>polyfill-php86</code></li>
+                        <li><code>Io\Poll</code> : <code>polyfill-io-poll</code> (PHP 8.1+)</li>
+                        <li><code>Time\Duration</code> : <code>polyfill-time</code> (PHP 8.1+)</li>
+                        <li>Non "polyfillable" : Partial Function Application, <code>readonly</code> avec défaut, réglages de session</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Polyfill : installation ciblée</h2>
+                    <pre><code class="language-bash">composer require symfony/polyfill-php86
+composer require symfony/polyfill-io-poll
+composer require symfony/polyfill-time</code></pre>
+                    <p>Objectif : garder le même code, le temps de migrer.</p>
+                </section>
+                <section>
                     <h2>Aujourd'hui</h2>
                     <ul style="font-size: 0.7em;">
                         <li style="margin-top: 10px;"><b>This Review is Bad!</b> par <i>Gaël Crispyn</i></li>
